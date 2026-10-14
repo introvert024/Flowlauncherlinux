@@ -1,0 +1,12 @@
+{
+  "ID": "B3B21FCD-6956-4E02-A89F-C8FCB4D4E37D",
+  "ActionKeyword": "*",
+  "Name": "Explorer",
+  "Description": "Search files and folders",
+  "Author": "Flow Launcher Team",
+  "Version": "2.5.0",
+  "Language": "csharp",
+  "Website": "https://flowlauncher.com",
+  "ExecuteFilePath": "FlowLauncher.Plugin.Explorer.dll",
+  "IcoPath": "Images/folder.png"
+}

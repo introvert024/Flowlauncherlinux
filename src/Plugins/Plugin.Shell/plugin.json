@@ -1,0 +1,12 @@
+{
+  "ID": "0EF1B6E2-F971-432F-9CC0-C09A9EC4C4D1",
+  "ActionKeyword": ">",
+  "Name": "Terminal",
+  "Description": "Run shell commands",
+  "Author": "Flow Launcher Team",
+  "Version": "2.5.0",
+  "Language": "csharp",
+  "Website": "https://flowlauncher.com",
+  "ExecuteFilePath": "FlowLauncher.Plugin.Shell.dll",
+  "IcoPath": "Images/terminal.png"
+}

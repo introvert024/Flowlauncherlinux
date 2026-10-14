@@ -1,0 +1,12 @@
+{
+  "ID": "BBB8F8CB-E5E7-4E54-AB74-D5A0D8E0B3F9",
+  "ActionKeyword": "kill",
+  "Name": "Process Killer",
+  "Description": "Kill running processes",
+  "Author": "Flow Launcher Team",
+  "Version": "2.5.0",
+  "Language": "csharp",
+  "Website": "https://flowlauncher.com",
+  "ExecuteFilePath": "FlowLauncher.Plugin.ProcessKiller.dll",
+  "IcoPath": "Images/kill.png"
+}

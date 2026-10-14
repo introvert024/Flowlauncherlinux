@@ -1,0 +1,12 @@
+{
+  "ID": "CEE0C9BC-E4D2-4A4A-A9CE-BEAEC60F5D5D",
+  "ActionKeyword": "*",
+  "Name": "System Commands",
+  "Description": "Shutdown, restart, sleep, lock",
+  "Author": "Flow Launcher Team",
+  "Version": "2.5.0",
+  "Language": "csharp",
+  "Website": "https://flowlauncher.com",
+  "ExecuteFilePath": "FlowLauncher.Plugin.Sys.dll",
+  "IcoPath": "Images/power.png"
+}

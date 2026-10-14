@@ -1,0 +1,215 @@
+name: Build Linux Packages
+
+on:
+  push:
+    branches: [ main, develop ]
+    tags: [ 'v*' ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to build (e.g. 1.0.0)'
+        required: false
+        default: '1.0.0'
+
+env:
+  DOTNET_VERSION: '8.0.x'
+  FLOW_VERSION: ${{ github.event.inputs.version || '1.0.0' }}
+
+jobs:
+  build:
+    name: Build (${{ matrix.arch }})
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        arch: [x64, arm64]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Extract version from tag
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: echo "FLOW_VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+
+      - name: Restore dependencies
+        working-directory: linux-port
+        run: dotnet restore FlowLauncher.Linux.sln
+
+      - name: Build & Publish (linux-${{ matrix.arch }})
+        working-directory: linux-port
+        run: |
+          dotnet publish src/FlowLauncher.Linux/FlowLauncher.Linux.csproj \
+            -r linux-${{ matrix.arch }} \
+            --self-contained false \
+            -c Release \
+            -o output/publish/linux-${{ matrix.arch }} \
+            /p:Version=${{ env.FLOW_VERSION }}
+
+      - name: Build Plugins
+        working-directory: linux-port
+        run: |
+          PLUGINS=("Plugin.Calculator" "Plugin.Shell" "Plugin.WebSearch" "Plugin.Explorer" "Plugin.Sys" "Plugin.ProcessKiller")
+          for plugin in "${PLUGINS[@]}"; do
+            echo "Building plugin: $plugin"
+            dotnet build src/Plugins/$plugin/$plugin.csproj \
+              -c Release \
+              -o output/publish/linux-${{ matrix.arch }}/Plugins/$plugin \
+              /p:Version=${{ env.FLOW_VERSION }}
+          done
+
+      - name: Upload publish artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: flow-launcher-linux-${{ matrix.arch }}-publish
+          path: linux-port/output/publish/linux-${{ matrix.arch }}/
+          retention-days: 7
+
+  package-deb:
+    name: Package .deb (amd64)
+    needs: build
+    runs-on: ubuntu-22.04
+    if: github.event_name != 'pull_request'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Extract version
+        run: |
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
+            echo "FLOW_VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+          else
+            echo "FLOW_VERSION=${{ github.event.inputs.version || '1.0.0' }}" >> $GITHUB_ENV
+          fi
+
+      - name: Download publish artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: flow-launcher-linux-x64-publish
+          path: linux-port/output/publish/linux-x64/
+
+      - name: Install dpkg tools
+        run: sudo apt-get install -y dpkg-dev
+
+      - name: Build .deb package
+        working-directory: linux-port
+        run: |
+          chmod +x packaging/build-deb.sh
+          FLOW_VERSION=${{ env.FLOW_VERSION }} bash packaging/build-deb.sh
+
+      - name: Upload .deb artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: flow-launcher-deb
+          path: linux-port/output/*.deb
+
+  package-rpm:
+    name: Package .rpm (x86_64)
+    needs: build
+    runs-on: ubuntu-22.04
+    if: github.event_name != 'pull_request'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Extract version
+        run: |
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
+            echo "FLOW_VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+          else
+            echo "FLOW_VERSION=${{ github.event.inputs.version || '1.0.0' }}" >> $GITHUB_ENV
+          fi
+
+      - name: Download publish artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: flow-launcher-linux-x64-publish
+          path: linux-port/output/publish/linux-x64/
+
+      - name: Install rpmbuild
+        run: sudo apt-get install -y rpm
+
+      - name: Build .rpm package
+        working-directory: linux-port
+        run: |
+          chmod +x packaging/build-rpm.sh
+          FLOW_VERSION=${{ env.FLOW_VERSION }} bash packaging/build-rpm.sh
+
+      - name: Upload .rpm artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: flow-launcher-rpm
+          path: linux-port/output/*.rpm
+
+  package-appimage:
+    name: Package AppImage
+    needs: build
+    runs-on: ubuntu-22.04
+    if: github.event_name != 'pull_request'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Extract version
+        run: |
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
+            echo "FLOW_VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+          else
+            echo "FLOW_VERSION=${{ github.event.inputs.version || '1.0.0' }}" >> $GITHUB_ENV
+          fi
+
+      - name: Download publish artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: flow-launcher-linux-x64-publish
+          path: linux-port/output/publish/linux-x64/
+
+      - name: Install AppImage tools
+        run: |
+          sudo apt-get install -y fuse libfuse2
+          wget -q -O /tmp/appimagetool https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
+          chmod +x /tmp/appimagetool
+
+      - name: Build AppImage
+        working-directory: linux-port
+        run: |
+          chmod +x packaging/build-appimage.sh
+          FLOW_VERSION=${{ env.FLOW_VERSION }} bash packaging/build-appimage.sh
+
+      - name: Upload AppImage artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: flow-launcher-appimage
+          path: linux-port/output/*.AppImage
+
+  release:
+    name: Create GitHub Release
+    needs: [package-deb, package-rpm, package-appimage]
+    runs-on: ubuntu-22.04
+    if: startsWith(github.ref, 'refs/tags/v')
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts/
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            artifacts/flow-launcher-deb/*.deb
+            artifacts/flow-launcher-rpm/*.rpm
+            artifacts/flow-launcher-appimage/*.AppImage
+          generate_release_notes: true
+          draft: false
+          prerelease: ${{ contains(github.ref, 'beta') || contains(github.ref, 'alpha') }}

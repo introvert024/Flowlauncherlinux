@@ -1,0 +1,12 @@
+{
+  "ID": "565B73353DBF4286B9F49EE21C73B8D5",
+  "ActionKeyword": "g",
+  "Name": "WebSearch",
+  "Description": "Search the web",
+  "Author": "Flow Launcher Team",
+  "Version": "2.5.0",
+  "Language": "csharp",
+  "Website": "https://flowlauncher.com",
+  "ExecuteFilePath": "FlowLauncher.Plugin.WebSearch.dll",
+  "IcoPath": "Images/google.png"
+}

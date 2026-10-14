@@ -1,0 +1,5 @@
+#!/bin/bash
+set -e
+update-desktop-database /usr/share/applications/ 2>/dev/null || true
+echo "Flow Launcher installed. Run 'flow-launcher' to start."
+exit 0

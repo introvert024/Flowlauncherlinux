@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Flow Launcher
+Comment=Fast application launcher for Linux
+Exec=/usr/bin/flow-launcher
+Icon=flow-launcher
+Categories=Utility;System;
+Keywords=launcher;search;application;
+StartupNotify=false
+NoDisplay=false
+X-GNOME-Autostart-Delay=3

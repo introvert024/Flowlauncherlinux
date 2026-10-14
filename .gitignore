@@ -1,0 +1,28 @@
+## .NET Core / C#
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+.vs/
+.vscode/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Build outputs
+output/
+publish/
+*.deb
+*.rpm
+*.AppImage
+*.tar.gz
+*.zip
+
+## OS specific
+.DS_Store
+Thumbs.db
+*.swp
+*~
+.idea/
+*.rider

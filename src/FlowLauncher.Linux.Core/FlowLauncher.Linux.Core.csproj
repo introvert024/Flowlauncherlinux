@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>FlowLauncher.Linux.Core</RootNamespace>
+    <AssemblyName>FlowLauncher.Linux.Core</AssemblyName>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
+    <PackageReference Include="StreamJsonRpc" Version="2.22.11" />
+    <PackageReference Include="NLog" Version="6.0.4" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FlowLauncher.Linux.Infrastructure\FlowLauncher.Linux.Infrastructure.csproj" />
+    <ProjectReference Include="..\FlowLauncher.Linux.Plugin\FlowLauncher.Linux.Plugin.csproj" />
+  </ItemGroup>
+</Project>

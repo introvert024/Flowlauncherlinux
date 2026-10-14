@@ -1,0 +1,12 @@
+{
+  "ID": "CEA0FDFC-D0D2-48D8-AA7C-C85878D3D8B1",
+  "ActionKeyword": "*",
+  "Name": "Calculator",
+  "Description": "Calculate math expressions",
+  "Author": "Flow Launcher Team",
+  "Version": "2.5.0",
+  "Language": "csharp",
+  "Website": "https://flowlauncher.com",
+  "ExecuteFilePath": "FlowLauncher.Plugin.Calculator.dll",
+  "IcoPath": "Images/calculator.png"
+}

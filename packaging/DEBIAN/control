@@ -1,0 +1,12 @@
+Package: flow-launcher
+Version: VERSION_PLACEHOLDER
+Architecture: amd64
+Maintainer: Flow Launcher Team <team@flowlauncher.com>
+Depends: dotnet-runtime-8.0, libx11-6, xdg-utils, libnotify-bin
+Recommends: locate | mlocate
+Section: utils
+Priority: optional
+Description: Fast application launcher for Linux
+ Fast, cross-platform application launcher inspired by Alfred and Wox.
+ Supports plugins, web search, calculator, file search and more.
+ Originally developed for Windows, now available on Linux.

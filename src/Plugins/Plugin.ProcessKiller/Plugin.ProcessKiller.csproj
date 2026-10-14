@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>FlowLauncher.Linux.Plugins.ProcessKiller</RootNamespace>
+    <AssemblyName>FlowLauncher.Plugin.ProcessKiller</AssemblyName>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\FlowLauncher.Linux.Plugin\FlowLauncher.Linux.Plugin.csproj" />
+  </ItemGroup>
+</Project>

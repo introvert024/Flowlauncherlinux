@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>FlowLauncher.Linux.Infrastructure</RootNamespace>
+    <AssemblyName>FlowLauncher.Linux.Infrastructure</AssemblyName>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="NLog" Version="6.0.4" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <PackageReference Include="ini-parser" Version="2.5.2" />
+    <PackageReference Include="Ben.Demystifier" Version="0.4.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FlowLauncher.Linux.Plugin\FlowLauncher.Linux.Plugin.csproj" Condition="Exists('..\FlowLauncher.Linux.Plugin\FlowLauncher.Linux.Plugin.csproj')" />
+    <ProjectReference Include="..\..\FlowLauncher.Linux.Plugin\FlowLauncher.Linux.Plugin.csproj" Condition="Exists('..\..\FlowLauncher.Linux.Plugin\FlowLauncher.Linux.Plugin.csproj')" />
+  </ItemGroup>
+</Project>

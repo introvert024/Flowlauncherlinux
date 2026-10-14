@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>FlowLauncher.Linux.Plugins.Applications</RootNamespace>
+    <AssemblyName>FlowLauncher.Plugin.Applications</AssemblyName>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\FlowLauncher.Linux.Infrastructure\FlowLauncher.Linux.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\FlowLauncher.Linux.Plugin\FlowLauncher.Linux.Plugin.csproj" />
+  </ItemGroup>
+</Project>

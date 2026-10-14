@@ -1,0 +1,12 @@
+{
+  "ID": "B3B21FCD-0001-4E02-A89F-C8FCB4D4E37E",
+  "ActionKeyword": "*",
+  "Name": "Applications",
+  "Description": "Search and launch installed Linux applications",
+  "Author": "Flow Launcher Team",
+  "Version": "2.5.0",
+  "Language": "csharp",
+  "Website": "https://flowlauncher.com",
+  "ExecuteFilePath": "FlowLauncher.Plugin.Applications.dll",
+  "IcoPath": "Images/app.png"
+}

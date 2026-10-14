@@ -1,0 +1,180 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:FlowLauncher.Linux.ViewModels"
+        x:Class="FlowLauncher.Linux.MainWindow"
+        Title="Flow Launcher"
+        Width="580"
+        MinWidth="400"
+        SizeToContent="Height"
+        WindowStartupLocation="CenterScreen"
+        ShowInTaskbar="False"
+        Topmost="True"
+        SystemDecorations="None"
+        TransparencyLevelHint="AcrylicBlur"
+        Background="Transparent"
+        CanResize="False"
+        KeyboardNavigation.TabNavigation="None">
+
+    <Window.Styles>
+        <!-- Search TextBox styling -->
+        <Style Selector="TextBox.SearchBox">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="FontSize" Value="20" />
+            <Setter Property="Padding" Value="8,8" />
+            <Setter Property="CaretBrush" Value="White" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+        <Style Selector="TextBox.SearchBox:focus /template/ Border#PART_BorderElement">
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+
+        <!-- Results ListBox -->
+        <Style Selector="ListBox.ResultsList">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="0" />
+        </Style>
+        <Style Selector="ListBox.ResultsList ListBoxItem">
+            <Setter Property="Padding" Value="8,6" />
+            <Setter Property="Cursor" Value="Hand" />
+        </Style>
+        <Style Selector="ListBox.ResultsList ListBoxItem:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#15FFFFFF" />
+        </Style>
+        <Style Selector="ListBox.ResultsList ListBoxItem:selected /template/ ContentPresenter">
+            <Setter Property="Background" Value="#250078D4" />
+        </Style>
+    </Window.Styles>
+
+    <!-- Root Panel -->
+    <Panel>
+        <!-- Acrylic background -->
+        <ExperimentalAcrylicBorder IsHitTestVisible="False" CornerRadius="12">
+            <ExperimentalAcrylicBorder.Material>
+                <ExperimentalAcrylicMaterial
+                    BackgroundSource="Digger"
+                    TintColor="#1A1A2E"
+                    TintOpacity="0.85"
+                    MaterialOpacity="0.9" />
+            </ExperimentalAcrylicBorder.Material>
+        </ExperimentalAcrylicBorder>
+
+        <!-- Content -->
+        <Border CornerRadius="12" ClipToBounds="True"
+                BorderBrush="#25FFFFFF" BorderThickness="1">
+            <StackPanel>
+
+                <!-- ===== Search Bar ===== -->
+                <Border Padding="0" Background="#10FFFFFF"
+                        BorderBrush="#20FFFFFF" BorderThickness="0,0,0,1">
+                    <Grid ColumnDefinitions="Auto,*,Auto" MinHeight="52">
+
+                        <!-- Search icon -->
+                        <TextBlock Grid.Column="0"
+                                   Text="&#xE721;"
+                                   FontFamily="Segoe MDL2 Assets, system-ui"
+                                   FontSize="20"
+                                   VerticalAlignment="Center"
+                                   Margin="16,0,8,0"
+                                   Opacity="0.55"
+                                   Foreground="White" />
+
+                        <!-- Query input -->
+                        <TextBox Grid.Column="1"
+                                 Classes="SearchBox"
+                                 Name="QueryInput"
+                                 Text="{Binding QueryText, Mode=TwoWay}"
+                                 Watermark="Search applications, files, web..."
+                                 VerticalAlignment="Center" />
+
+                        <!-- Clear button -->
+                        <Button Grid.Column="2"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                IsVisible="{Binding HasQuery}"
+                                Command="{Binding ClearQueryCommand}"
+                                Margin="4,0,8,0"
+                                VerticalAlignment="Center"
+                                Padding="6,4"
+                                CornerRadius="4">
+                            <TextBlock Text="✕"
+                                       Foreground="White"
+                                       Opacity="0.5"
+                                       FontSize="14" />
+                        </Button>
+                    </Grid>
+                </Border>
+
+                <!-- ===== Results List ===== -->
+                <ListBox Classes="ResultsList"
+                         Name="ResultsListBox"
+                         ItemsSource="{Binding Results}"
+                         SelectedItem="{Binding SelectedResult, Mode=TwoWay}"
+                         IsVisible="{Binding HasResults}"
+                         MaxHeight="380"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid ColumnDefinitions="Auto,*,Auto" MinHeight="54">
+
+                                <!-- Icon -->
+                                <Border Grid.Column="0"
+                                        Width="36" Height="36"
+                                        CornerRadius="6"
+                                        Margin="4,0,8,0"
+                                        VerticalAlignment="Center"
+                                        ClipToBounds="True"
+                                        Background="#15FFFFFF">
+                                    <Image Source="{Binding IcoPath}"
+                                           Stretch="UniformToFill"
+                                           IsVisible="{Binding IcoPath, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                                </Border>
+
+                                <!-- Title and Subtitle -->
+                                <StackPanel Grid.Column="1"
+                                            VerticalAlignment="Center"
+                                            Spacing="2">
+                                    <TextBlock Text="{Binding Title}"
+                                               FontSize="14"
+                                               FontWeight="Medium"
+                                               Foreground="White"
+                                               TextTrimming="CharacterEllipsis" />
+                                    <TextBlock Text="{Binding SubTitle}"
+                                               FontSize="11"
+                                               Foreground="#99FFFFFF"
+                                               TextTrimming="CharacterEllipsis"
+                                               IsVisible="{Binding SubTitle, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                                </StackPanel>
+
+                                <!-- Score badge (debug, hidden in release) -->
+                                <!-- <TextBlock Grid.Column="2" Text="{Binding Score}" ... /> -->
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <!-- ===== Status / Hint Bar ===== -->
+                <Border IsVisible="{Binding HasResults}"
+                        Background="#08FFFFFF"
+                        Padding="16,6">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <TextBlock Grid.Column="0"
+                                   Text="{Binding StatusText}"
+                                   FontSize="11"
+                                   Foreground="#55FFFFFF"
+                                   VerticalAlignment="Center" />
+                        <TextBlock Grid.Column="1"
+                                   Text="↵ Open  ⇧↵ As Admin  Esc Close"
+                                   FontSize="11"
+                                   Foreground="#33FFFFFF"
+                                   VerticalAlignment="Center" />
+                    </Grid>
+                </Border>
+
+            </StackPanel>
+        </Border>
+    </Panel>
+</Window>
