@@ -11,6 +11,6 @@
     <PackageReference Include="mXparser" Version="5.2.1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\FlowLauncher.Linux.Plugin\FlowLauncher.Linux.Plugin.csproj" />
+    <ProjectReference Include="../../FlowLauncher.Linux.Plugin/FlowLauncher.Linux.Plugin.csproj" />
   </ItemGroup>
 </Project>

@@ -14,7 +14,7 @@
     <PackageReference Include="NLog" Version="6.0.4" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\FlowLauncher.Linux.Infrastructure\FlowLauncher.Linux.Infrastructure.csproj" />
-    <ProjectReference Include="..\FlowLauncher.Linux.Plugin\FlowLauncher.Linux.Plugin.csproj" />
+    <ProjectReference Include="../FlowLauncher.Linux.Infrastructure/FlowLauncher.Linux.Infrastructure.csproj" />
+    <ProjectReference Include="../FlowLauncher.Linux.Plugin/FlowLauncher.Linux.Plugin.csproj" />
   </ItemGroup>
 </Project>

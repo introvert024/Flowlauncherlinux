@@ -15,7 +15,6 @@
     <PackageReference Include="Ben.Demystifier" Version="0.4.1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\FlowLauncher.Linux.Plugin\FlowLauncher.Linux.Plugin.csproj" Condition="Exists('..\FlowLauncher.Linux.Plugin\FlowLauncher.Linux.Plugin.csproj')" />
-    <ProjectReference Include="..\..\FlowLauncher.Linux.Plugin\FlowLauncher.Linux.Plugin.csproj" Condition="Exists('..\..\FlowLauncher.Linux.Plugin\FlowLauncher.Linux.Plugin.csproj')" />
+    <ProjectReference Include="../FlowLauncher.Linux.Plugin/FlowLauncher.Linux.Plugin.csproj" />
   </ItemGroup>
 </Project>
