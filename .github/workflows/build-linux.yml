@@ -17,6 +17,9 @@ env:
   DOTNET_VERSION: '8.0.x'
   FLOW_VERSION: ${{ github.event.inputs.version || '1.0.0' }}
 
+permissions:
+  contents: write
+
 jobs:
   build:
     name: Build (${{ matrix.arch }})
@@ -39,11 +42,9 @@ jobs:
         run: echo "FLOW_VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
 
       - name: Restore dependencies
-        working-directory: linux-port
         run: dotnet restore FlowLauncher.Linux.sln
 
       - name: Build & Publish (linux-${{ matrix.arch }})
-        working-directory: linux-port
         run: |
           dotnet publish src/FlowLauncher.Linux/FlowLauncher.Linux.csproj \
             -r linux-${{ matrix.arch }} \
@@ -53,9 +54,8 @@ jobs:
             /p:Version=${{ env.FLOW_VERSION }}
 
       - name: Build Plugins
-        working-directory: linux-port
         run: |
-          PLUGINS=("Plugin.Calculator" "Plugin.Shell" "Plugin.WebSearch" "Plugin.Explorer" "Plugin.Sys" "Plugin.ProcessKiller")
+          PLUGINS=("Plugin.Applications" "Plugin.Calculator" "Plugin.Shell" "Plugin.WebSearch" "Plugin.Explorer" "Plugin.Sys" "Plugin.ProcessKiller")
           for plugin in "${PLUGINS[@]}"; do
             echo "Building plugin: $plugin"
             dotnet build src/Plugins/$plugin/$plugin.csproj \
@@ -68,7 +68,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: flow-launcher-linux-${{ matrix.arch }}-publish
-          path: linux-port/output/publish/linux-${{ matrix.arch }}/
+          path: output/publish/linux-${{ matrix.arch }}/
           retention-days: 7
 
   package-deb:
@@ -93,13 +93,12 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: flow-launcher-linux-x64-publish
-          path: linux-port/output/publish/linux-x64/
+          path: output/publish/linux-x64/
 
       - name: Install dpkg tools
         run: sudo apt-get install -y dpkg-dev
 
       - name: Build .deb package
-        working-directory: linux-port
         run: |
           chmod +x packaging/build-deb.sh
           FLOW_VERSION=${{ env.FLOW_VERSION }} bash packaging/build-deb.sh
@@ -108,7 +107,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: flow-launcher-deb
-          path: linux-port/output/*.deb
+          path: output/*.deb
 
   package-rpm:
     name: Package .rpm (x86_64)
@@ -132,13 +131,12 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: flow-launcher-linux-x64-publish
-          path: linux-port/output/publish/linux-x64/
+          path: output/publish/linux-x64/
 
       - name: Install rpmbuild
         run: sudo apt-get install -y rpm
 
       - name: Build .rpm package
-        working-directory: linux-port
         run: |
           chmod +x packaging/build-rpm.sh
           FLOW_VERSION=${{ env.FLOW_VERSION }} bash packaging/build-rpm.sh
@@ -147,7 +145,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: flow-launcher-rpm
-          path: linux-port/output/*.rpm
+          path: output/*.rpm
 
   package-appimage:
     name: Package AppImage
@@ -171,7 +169,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: flow-launcher-linux-x64-publish
-          path: linux-port/output/publish/linux-x64/
+          path: output/publish/linux-x64/
 
       - name: Install AppImage tools
         run: |
@@ -180,7 +178,6 @@ jobs:
           chmod +x /tmp/appimagetool
 
       - name: Build AppImage
-        working-directory: linux-port
         run: |
           chmod +x packaging/build-appimage.sh
           FLOW_VERSION=${{ env.FLOW_VERSION }} bash packaging/build-appimage.sh
@@ -189,13 +186,13 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: flow-launcher-appimage
-          path: linux-port/output/*.AppImage
+          path: output/*.AppImage
 
   release:
     name: Create GitHub Release
     needs: [package-deb, package-rpm, package-appimage]
     runs-on: ubuntu-22.04
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
 
     steps:
       - name: Download all artifacts
@@ -203,13 +200,18 @@ jobs:
         with:
           path: artifacts/
 
+      - name: Prepare release files
+        run: |
+          mkdir -p release-files
+          find artifacts -type f \( -name "*.deb" -o -name "*.rpm" -o -name "*.AppImage" \) -exec cp {} release-files/ \;
+          ls -la release-files/
+
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          files: |
-            artifacts/flow-launcher-deb/*.deb
-            artifacts/flow-launcher-rpm/*.rpm
-            artifacts/flow-launcher-appimage/*.AppImage
+          files: release-files/*
+          tag_name: ${{ github.ref_name || format('v{0}', env.FLOW_VERSION) }}
+          name: Flow Launcher Linux ${{ github.ref_name || format('v{0}', env.FLOW_VERSION) }}
           generate_release_notes: true
           draft: false
-          prerelease: ${{ contains(github.ref, 'beta') || contains(github.ref, 'alpha') }}
+          prerelease: false

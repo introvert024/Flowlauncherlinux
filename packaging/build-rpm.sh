@@ -38,7 +38,7 @@ else
 fi
 
 # Build plugins
-PLUGINS=("Plugin.Calculator" "Plugin.Shell" "Plugin.WebSearch" "Plugin.Explorer" "Plugin.Sys" "Plugin.ProcessKiller")
+PLUGINS=("Plugin.Applications" "Plugin.Calculator" "Plugin.Shell" "Plugin.WebSearch" "Plugin.Explorer" "Plugin.Sys" "Plugin.ProcessKiller")
 for plugin in "${PLUGINS[@]}"; do
     PLUGIN_CSPROJ="$ROOT_DIR/src/Plugins/$plugin/$plugin.csproj"
     if [ -f "$PLUGIN_CSPROJ" ]; then

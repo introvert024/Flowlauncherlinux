@@ -30,7 +30,7 @@ dotnet publish "$ROOT_DIR/src/FlowLauncher.Linux/FlowLauncher.Linux.csproj" \
     /p:Version="$VERSION"
 
 # Build and copy plugins
-PLUGINS=("Plugin.Calculator" "Plugin.Shell" "Plugin.WebSearch" "Plugin.Explorer" "Plugin.Sys" "Plugin.ProcessKiller")
+PLUGINS=("Plugin.Applications" "Plugin.Calculator" "Plugin.Shell" "Plugin.WebSearch" "Plugin.Explorer" "Plugin.Sys" "Plugin.ProcessKiller")
 for plugin in "${PLUGINS[@]}"; do
     echo "Building plugin: $plugin"
     dotnet build "$ROOT_DIR/src/Plugins/$plugin/$plugin.csproj" \
