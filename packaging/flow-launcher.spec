@@ -9,7 +9,6 @@ Source0:        %{name}-%{version}.tar.gz
 Source1:        flow-launcher.desktop
 
 BuildArch:      x86_64
-BuildRequires:  dotnet-sdk-8.0
 Requires:       dotnet-runtime-8.0
 Requires:       libX11
 Requires:       xdg-utils

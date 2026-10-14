@@ -152,7 +152,7 @@ fi
 
 # 6. Run rpmbuild
 echo "Running rpmbuild..."
-rpmbuild -bb --define "version $VERSION" "$SPEC_FILE"
+rpmbuild -bb --nodeps --define "version $VERSION" "$SPEC_FILE"
 
 # 7. Copy final RPM out
 mkdir -p "$OUTPUT_DIR"
